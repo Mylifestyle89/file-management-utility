@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# Tiện ích quản lý và đổi tên tệp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ứng dụng web dùng File System Access API để đổi tên hàng loạt và sắp xếp file trong thư mục trên máy bạn (chạy hoàn toàn trên trình duyệt, không gửi file lên server).
 
-Currently, two official plugins are available:
+## Tính năng
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Chọn thư mục**: Mở một hoặc nhiều thư mục (tối đa 10) để làm việc.
+- **Đổi tên hàng loạt**:
+  - Thêm tiền tố / hậu tố
+  - Tìm và thay thế (chuỗi hoặc regex)
+  - Đổi kiểu chữ: thường, HOA, camelCase
+  - Đánh số thứ tự (tùy chỉnh bắt đầu, độ rộng, ký tự phân cách)
+  - Template: `{name}`, `{original}`, `{ext}`, `{index}`
+- **Lọc**: Theo tên file và theo phần mở rộng.
+- **Phạm vi áp dụng**: Toàn bộ file đang lọc hoặc chỉ file được chọn.
+- **Sắp xếp**: Theo bảng chữ cái, theo đuôi file, ưu tiên theo tiền tố/hậu tố.
+- **Tạo thư mục con theo tiền tố**: Tách tên file bằng ký tự (vd: `-_.`) và di chuyển file vào thư mục con trùng tên tiền tố.
+- **Mẫu cấu hình (preset)**: Lưu/áp dụng/xóa cấu hình đổi tên (lưu trong localStorage).
+- **Hoàn tác**: Hoàn tác toàn bộ lần đổi tên gần nhất.
+- **Giao diện**: Dark/Light mode.
 
-## React Compiler
+## Trình duyệt hỗ trợ
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Cần trình duyệt hỗ trợ **File System Access API** (chọn thư mục và đọc/ghi file):
 
-## Expanding the ESLint configuration
+- **Chrome** (desktop) 86+
+- **Edge** (desktop) 86+
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Firefox và Safari hiện chưa hỗ trợ đầy đủ; mở app trên Chrome hoặc Edge để dùng đầy đủ chức năng.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Cài đặt và chạy
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Mở địa chỉ hiển thị (thường `http://localhost:5173`) trong Chrome hoặc Edge.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Build production
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
+npm run preview   # xem bản build
 ```
+
+## Cấu trúc dự án
+
+- `src/types.ts` — Kiểu TypeScript và hằng số (settings mặc định, giới hạn thư mục, v.v.)
+- `src/utils/` — Hàm thuần: format, tên file, đọc/ghi file hệ thống, kiểm tra xung đột.
+- `src/components/` — MessageBar, FileTable, Sidebar.
+- `src/App.tsx` — State và luồng xử lý chính, gắn kết components và utils.
+
+## Bảo mật và quyền
+
+- Ứng dụng chỉ truy cập thư mục/file mà bạn chọn qua hộp thoại của trình duyệt.
+- Không có backend; mọi thao tác đọc/ghi file diễn ra trong trình duyệt trên máy bạn.
